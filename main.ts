@@ -262,9 +262,6 @@ function setLevel () {
             TileScale.Sixteen
         ))
         tiles.placeOnTile(Kitty, tiles.getTileLocation(3, 6))
-    } else {
-        game.splash("You win!")
-        game.reset()
     }
     for (let value of tiles.getTilesByType(myTiles.tile1)) {
         Fish = sprites.create(img`
@@ -272,14 +269,14 @@ function setLevel () {
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
-. . 8 8 . . 8 8 8 8 8 8 . . . . 
-. . 8 8 . . 8 8 8 8 8 8 . . . . 
-. . 8 8 8 8 8 8 8 8 1 1 8 8 . . 
-. . 8 8 8 8 8 8 8 8 1 1 8 8 . . 
-. . 8 8 8 8 8 8 8 8 8 8 8 8 . . 
-. . 8 8 8 8 8 8 8 8 8 8 8 8 . . 
-. . 8 8 . . 8 8 8 8 8 8 . . . . 
-. . 8 8 . . 8 8 8 8 8 8 . . . . 
+. . 5 5 . . 5 5 5 5 5 5 . . . . 
+. . 5 5 . . 5 5 5 5 5 5 . . . . 
+. . 5 5 5 5 5 5 5 5 f f 5 5 . . 
+. . 5 5 5 5 5 5 5 5 f f 5 5 . . 
+. . 5 5 5 5 5 5 5 5 5 5 5 5 . . 
+. . 5 5 5 5 5 5 5 5 5 5 5 5 . . 
+. . 5 5 . . 5 5 5 5 5 5 . . . . 
+. . 5 5 . . 5 5 5 5 5 5 . . . . 
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
@@ -287,7 +284,6 @@ function setLevel () {
 `, SpriteKind.Food)
         tiles.placeOnTile(Fish, value)
     }
-    game.splash("Level " + Level + " of 12", "B to restart level")
 }
 function moveRight () {
     moved = 0
@@ -357,10 +353,17 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 function setLevelCompletion () {
     if (sprites.allOfKind(SpriteKind.Food).length == 0) {
-        pause(500)
+        pause(300)
         music.playMelody("C - A - - - - - ", 480)
         Level += 1
-        setLevel()
+        tiles.placeOnTile(Kitty, tiles.getTileLocation(5, 3))
+        if (Level > 12) {
+            game.splash("You win!")
+            game.reset()
+        } else {
+            game.splash("Level " + Level + " of 12", "B to restart level")
+            setLevel()
+        }
     }
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -392,24 +395,42 @@ let Kitty: Sprite = null
 color.setPalette(
 color.GrayScale
 )
+game.setDialogCursor(img`
+a a . . . . a a . . . . . . . . 
+a a . . . . a a . . . . . . . . 
+a a a a a a a a . . . . a a . . 
+a a a a a a a a . . . . a a . . 
+5 5 a a 5 5 a a . . . . . . a a 
+5 5 a a 5 5 a a . . . . . . a a 
+a a a a a a a a . . . . . . a a 
+a a a a a a a a . . . . . . a a 
+. . a a a a a a a a a a a a a a 
+. . a a a a a a a a a a a a a a 
+. . a a a a a a a a a a a a a a 
+. . a a a a a a a a a a a a a a 
+. . a a a a a a a a a a a a a a 
+. . a a a a a a a a a a a a a a 
+. . a a . . a a . . . . . . a a 
+. . a a . . a a . . . . . . a a 
+`)
 game.splash("Hungry Kitty", "by Adrian")
 Kitty = sprites.create(img`
-8 8 . . . . 8 8 . . . . . . . . 
-8 8 . . . . 8 8 . . . . . . . . 
-8 8 8 8 8 8 8 8 . . . . 8 8 . . 
-8 8 8 8 8 8 8 8 . . . . 8 8 . . 
-1 1 8 8 1 1 8 8 . . . . . . 8 8 
-1 1 8 8 1 1 8 8 . . . . . . 8 8 
-8 8 8 8 8 8 8 8 . . . . . . 8 8 
-8 8 8 8 8 8 8 8 . . . . . . 8 8 
-. . 8 8 8 8 8 8 8 8 8 8 8 8 8 8 
-. . 8 8 8 8 8 8 8 8 8 8 8 8 8 8 
-. . 8 8 8 8 8 8 8 8 8 8 8 8 8 8 
-. . 8 8 8 8 8 8 8 8 8 8 8 8 8 8 
-. . 8 8 8 8 8 8 8 8 8 8 8 8 8 8 
-. . 8 8 8 8 8 8 8 8 8 8 8 8 8 8 
-. . 8 8 . . 8 8 . . . . . . 8 8 
-. . 8 8 . . 8 8 . . . . . . 8 8 
+a a . . . . a a . . . . . . . . 
+a a . . . . a a . . . . . . . . 
+a a a a a a a a . . . . a a . . 
+a a a a a a a a . . . . a a . . 
+5 5 a a 5 5 a a . . . . . . a a 
+5 5 a a 5 5 a a . . . . . . a a 
+a a a a a a a a . . . . . . a a 
+a a a a a a a a . . . . . . a a 
+. . a a a a a a a a a a a a a a 
+. . a a a a a a a a a a a a a a 
+. . a a a a a a a a a a a a a a 
+. . a a a a a a a a a a a a a a 
+. . a a a a a a a a a a a a a a 
+. . a a a a a a a a a a a a a a 
+. . a a . . a a . . . . . . a a 
+. . a a . . a a . . . . . . a a 
 `, SpriteKind.Player)
 Level = 1
 setLevel()
