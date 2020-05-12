@@ -57,13 +57,6 @@ f f f f f f f f f f f f f f f f
 f f f f f f f f f f f f f f f f 
 `
 }
-function setLevelCompletion () {
-    if (sprites.allOfKind(SpriteKind.Food).length == 0) {
-        pause(500)
-        Level += 1
-        setLevel()
-    }
-}
 function setLevel () {
     if (Level == 1) {
         tiles.setTilemap(tiles.createTilemap(
@@ -186,7 +179,7 @@ function setLevel () {
         tiles.placeOnTile(Kitty, tiles.getTileLocation(9, 1))
     } else if (Level == 8) {
         tiles.setTilemap(tiles.createTilemap(
-            hex`0a0008000000000000000000000000000000000001000000010000010000000000000000000000000000000000000000000000000000010000000000010000000000000100000100000000000000000000000000`,
+            hex`0a0008000100000000000001000000000000000000000000000000000000000000000101000000010000000001000000000000010000000000000000000000000000000000000000000000000000000000000000`,
             img`
 . . . . . . . . . . 
 . . . . . . . . . . 
@@ -200,6 +193,75 @@ function setLevel () {
             [myTiles.tile0,myTiles.tile1,myTiles.tile2],
             TileScale.Sixteen
         ))
+        tiles.placeOnTile(Kitty, tiles.getTileLocation(1, 6))
+    } else if (Level == 9) {
+        tiles.setTilemap(tiles.createTilemap(
+            hex`0a0008000000000000010000000101000000010000000000010000000000000000010000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000`,
+            img`
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+`,
+            [myTiles.tile0,myTiles.tile1,myTiles.tile2],
+            TileScale.Sixteen
+        ))
+        tiles.placeOnTile(Kitty, tiles.getTileLocation(6, 0))
+    } else if (Level == 10) {
+        tiles.setTilemap(tiles.createTilemap(
+            hex`0a0008000000000100000000000000000000000000000000000000000000000000000000000000000000000000000101010000000000000100000100000001000000000000000000000000000000000000000000`,
+            img`
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+`,
+            [myTiles.tile0,myTiles.tile1,myTiles.tile2],
+            TileScale.Sixteen
+        ))
+        tiles.placeOnTile(Kitty, tiles.getTileLocation(7, 0))
+    } else if (Level == 11) {
+        tiles.setTilemap(tiles.createTilemap(
+            hex`0a0008000000000000010000000100000000000000000000000000000000000000000100000000010000000000000000000000000000010000000000000100000100000000000000000000000000000000000000`,
+            img`
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+`,
+            [myTiles.tile0,myTiles.tile1,myTiles.tile2],
+            TileScale.Sixteen
+        ))
+        tiles.placeOnTile(Kitty, tiles.getTileLocation(4, 5))
+    } else if (Level == 12) {
+        tiles.setTilemap(tiles.createTilemap(
+            hex`0a0008000000000100000000010000000000000000000000000000000000000000000100000100000000000100000100000000000100000000000000000000010000010000000000000000000000000000000000`,
+            img`
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+. . . . . . . . . . 
+`,
+            [myTiles.tile0,myTiles.tile1,myTiles.tile2],
+            TileScale.Sixteen
+        ))
+        tiles.placeOnTile(Kitty, tiles.getTileLocation(3, 6))
     } else {
         game.splash("You win!")
         game.reset()
@@ -225,75 +287,47 @@ function setLevel () {
 `, SpriteKind.Food)
         tiles.placeOnTile(Fish, value)
     }
-    game.splash("Level " + Level)
-}
-function moveLeft () {
-    for (let value of sprites.allOfKind(SpriteKind.Food)) {
-        if (Kitty.y == value.y && Kitty.x > value.x) {
-            checkX = Kitty.x
-            while (checkX < 160 && checkX != value.x) {
-                checkX += -16
-                if (checkX == value.x) {
-                    music.playTone(262, music.beat(BeatFraction.Eighth))
-                    Kitty.x = value.x
-                    value.destroy()
-                }
-            }
-        }
-    }
+    game.splash("Level " + Level + " of 12", "B to restart level")
 }
 function moveRight () {
-    for (let value of sprites.allOfKind(SpriteKind.Food)) {
-        if (Kitty.y == value.y && Kitty.x < value.x) {
-            checkX = Kitty.x
-            while (checkX < 160 && checkX != value.x) {
-                checkX += 16
-                if (checkX == value.x) {
-                    music.playTone(262, music.beat(BeatFraction.Eighth))
-                    Kitty.x = value.x
-                    value.destroy()
-                }
+    moved = 0
+    checkX = Kitty.x
+    checkY = Kitty.y
+    while (checkX < 160 && moved == 0) {
+        checkX += 16
+        for (let value of sprites.allOfKind(SpriteKind.Food)) {
+            if (Kitty.y == value.y && checkX == value.x) {
+                music.playTone(262, music.beat(BeatFraction.Eighth))
+                moved = 1
+                Kitty.x = value.x
+                value.destroy()
+                setLevelCompletion()
             }
         }
     }
 }
 function moveUp () {
-    for (let value of sprites.allOfKind(SpriteKind.Food)) {
-        if (Kitty.x == value.x && Kitty.y > value.y) {
-            checkY = Kitty.y
-            while (checkY > 0 && checkY != value.y) {
-                checkY += -16
-                if (checkY == value.y) {
-                    music.playTone(262, music.beat(BeatFraction.Eighth))
-                    Kitty.y = value.y
-                    value.destroy()
-                }
-            }
-        }
-    }
-}
-function moveDown () {
-    for (let value of sprites.allOfKind(SpriteKind.Food)) {
-        if (Kitty.x == value.x && Kitty.y < value.y) {
-            checkY = Kitty.y
-            while (checkY < 120 && checkY != value.y) {
-                checkY += 16
-                if (checkY == value.y) {
-                    music.playTone(262, music.beat(BeatFraction.Eighth))
-                    Kitty.y = value.y
-                    value.destroy()
-                }
+    moved = 0
+    checkY = Kitty.y
+    checkX = Kitty.x
+    while (checkY > 0 && moved == 0) {
+        checkY += -16
+        for (let value of sprites.allOfKind(SpriteKind.Food)) {
+            if (Kitty.x == value.x && checkY == value.y) {
+                music.playTone(262, music.beat(BeatFraction.Eighth))
+                moved = 1
+                Kitty.y = value.y
+                value.destroy()
+                setLevelCompletion()
             }
         }
     }
 }
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     moveLeft()
-    setLevelCompletion()
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     moveDown()
-    setLevelCompletion()
 })
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     for (let value of sprites.allOfKind(SpriteKind.Food)) {
@@ -301,16 +335,57 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     }
     setLevel()
 })
+function moveDown () {
+    moved = 0
+    checkY = Kitty.y
+    checkX = Kitty.x
+    while (checkY < 120 && moved == 0) {
+        checkY += 16
+        for (let value of sprites.allOfKind(SpriteKind.Food)) {
+            if (Kitty.x == value.x && checkY == value.y) {
+                music.playTone(262, music.beat(BeatFraction.Eighth))
+                moved = 1
+                Kitty.y = value.y
+                value.destroy()
+                setLevelCompletion()
+            }
+        }
+    }
+}
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     moveRight()
-    setLevelCompletion()
 })
+function setLevelCompletion () {
+    if (sprites.allOfKind(SpriteKind.Food).length == 0) {
+        pause(500)
+        music.playMelody("C - A - - - - - ", 480)
+        Level += 1
+        setLevel()
+    }
+}
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     moveUp()
-    setLevelCompletion()
 })
+function moveLeft () {
+    moved = 0
+    checkY = Kitty.y
+    checkX = Kitty.x
+    while (checkX > 0 && moved == 0) {
+        checkX += -16
+        for (let value of sprites.allOfKind(SpriteKind.Food)) {
+            if (Kitty.y == value.y && checkX == value.x) {
+                music.playTone(262, music.beat(BeatFraction.Eighth))
+                moved = 1
+                Kitty.x = value.x
+                value.destroy()
+                setLevelCompletion()
+            }
+        }
+    }
+}
 let checkY = 0
 let checkX = 0
+let moved = 0
 let Fish: Sprite = null
 let Level = 0
 let Kitty: Sprite = null
